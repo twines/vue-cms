@@ -22,3 +22,5 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+[axios拦截器](https://www.jianshu.com/p/a0c67f4e145e)
