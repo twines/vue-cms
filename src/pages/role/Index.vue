@@ -3,7 +3,7 @@
         <el-button @click="showDialog" type="primary" style="margin-top: 8px">添加角色</el-button>
 
         <el-dialog title="添加角色" :visible.sync="addRoleDialogVisible">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <el-form-item label="角色名称" prop="roleName">
                     <el-input v-model="ruleForm.roleName"></el-input>
                 </el-form-item>
@@ -17,7 +17,7 @@
             </el-form>
         </el-dialog>
         <el-dialog title="编辑权限" :visible.sync="permissionVisible">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <el-form-item>
                     <el-tree
                             :data="permissionList"

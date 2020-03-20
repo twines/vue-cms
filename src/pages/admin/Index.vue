@@ -1,14 +1,22 @@
 <template>
     <el-card shadow="hover">
-        <el-button @click="showDialog" type="primary" style="margin-top: 8px">添加角色</el-button>
+        <el-row>
+            <el-button @click="showDialog" type="primary" style="margin-top: 8px">添加管理员</el-button>
+        </el-row>
 
-        <el-dialog title="添加角色" :visible.sync="dialogFormVisible">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="角色名称" prop="roleName">
-                    <el-input v-model="ruleForm.roleName"></el-input>
+        <el-dialog title="添加管理员" :visible.sync="dialogFormVisible">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+                <el-form-item label="管理员名称" prop="name">
+                    <el-input type="text" clearable v-model="ruleForm.name"></el-input>
                 </el-form-item>
-                <el-form-item label="角色描述" prop="description">
-                    <el-input type="textarea" v-model="ruleForm.description"></el-input>
+                <el-form-item label="密码" prop="password">
+                    <el-input type="password" clearable v-model="ruleForm.password"></el-input>
+                </el-form-item>
+                <el-form-item label="所属角色" prop="role">
+                    <el-select v-model="ruleForm.role" placeholder="请选择角色">
+                        <el-option label="区域一" value="shanghai"></el-option>
+                        <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -24,8 +32,22 @@
             </el-table-column>
 
             <el-table-column prop="id" label="ID"></el-table-column>
-            <el-table-column prop="roleName" label="角色名称"></el-table-column>
-            <el-table-column prop="description" label="角色描述"></el-table-column>
+            <el-table-column prop="name" label="管理员名称"></el-table-column>
+            <el-table-column prop="trueName" label="真实姓名"></el-table-column>
+            <el-table-column prop="mobile" label="手机号"></el-table-column>
+            <el-table-column prop="qq" label="QQ"></el-table-column>
+            <el-table-column prop="email" label="邮箱"></el-table-column>
+            <el-table-column prop="status" label="状态">
+                <template slot-scope="scope">
+                    <el-tag v-if="scope.row.status===1">正常</el-tag>
+                    <el-tag v-else type="danger">禁用</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column prop="role" label="所属角色">
+                <template slot-scope="scope">
+                    {{scope.row.role.name}}
+                </template>
+            </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
@@ -38,7 +60,7 @@
                     :hide-on-single-page="true"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page.sync="currentPage3"
+                    :current-page.sync="currentPage"
                     :page-size="100"
                     layout="prev, pager, next, jumper"
                     :total="1000">
@@ -53,21 +75,23 @@
         data() {
             return {
                 tableData: [],
-                currentPage1: 5,
-                currentPage2: 5,
-                currentPage3: 5,
-                currentPage4: 4,
+                currentPage: 1,
                 ruleForm: {
-                    roleName: '',
-                    description: ''
+                    name: '',
+                    role: '',
+                    password: ''
                 },
                 rules: {
-                    roleName: [
-                        {required: true, message: '请输入角色名称', trigger: 'blur'},
+                    name: [
+                        {required: true, message: '请输入管理员名称', trigger: 'blur'},
                         {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
                     ],
-                    description: [
-                        {required: true, message: '请填写活动形式', trigger: 'blur'}
+                    password: [
+                        {required: true, message: '请填写密码', trigger: 'blur'},
+                        {min: 6, max: 20, message: '密码长度在 3 到 20 个字符', trigger: 'blur'}
+                    ],
+                    role: [
+                        {required: true, message: '请选择角色', trigger: 'change'}
                     ]
                 },
                 dialogFormVisible: false,
@@ -87,17 +111,20 @@
                 console.log(`当前页: ${val}`);
             },
             getRoleList() {
-                let tmp = [];
-                for (let i = 1; i < 10; i++) {
-                    tmp.push(
-                        {
-                            id: i,
-                            roleName: '角色' + i,
-                            description: '角色描述' + i,
-                        }
-                    )
-                }
-                this.tableData = tmp
+                this.$api.getAdminList(this.currentPage).then(v => {
+                    this.tableData = v.data.data
+                });
+                // let tmp = [];
+                // for (let i = 1; i < 10; i++) {
+                //     tmp.push(
+                //         {
+                //             id: i,
+                //             name: '角色' + i,
+                //             password: '角色描述' + i,
+                //         }
+                //     )
+                // }
+                // this.tableData = tmp
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

@@ -5,6 +5,7 @@ import Home from '../pages/home/Index'
 import Dashboard from '../pages/dashboard/Index'
 import Role from '../pages/role/Index'
 import User from '../pages/user/Index'
+import Admin from '../pages/admin/Index'
 
 vue.use(VueRouter);
 const routes = [
@@ -20,13 +21,16 @@ const routes = [
         ]
     },
     {
-        path: '/role',
+        path: '/',
         component: Home,
-        redirect: '/role/list',
         children: [
             {
-                path: 'list',
+                path: '/role/list',
                 component: Role
+            },
+            {
+                path: '/admin/list',
+                component: Admin
             },
         ]
     },

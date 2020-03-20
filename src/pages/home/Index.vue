@@ -40,6 +40,7 @@
                             <span slot="title">权限管理</span>
                         </template>
                         <el-menu-item index="/role/list">角色列表</el-menu-item>
+                        <el-menu-item index="/admin/list">管理员列表</el-menu-item>
                     </el-submenu>
                     <el-submenu index="3">
                         <template slot="title">

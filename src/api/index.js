@@ -114,6 +114,9 @@ const api = {
     },
     changePermission: function (roleId, permissionList) {
         return post('/admin/v1/role/permission/' + roleId, {'permissionList': permissionList})
+    },
+    getAdminList: function (page) {
+        return get('/admin/v1/admin/list?page=' + page)
     }
 
 };
