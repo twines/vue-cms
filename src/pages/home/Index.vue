@@ -23,15 +23,16 @@
                         @open="handleOpen"
                         @close="handleClose"
                         router
+                        :default-active="active"
                         unique-opened
                         :collapse-transition="false"
                         :collapse="isCollapse">
                     <el-submenu index="1">
                         <template slot="title">
-                            <i class="el-icon-location"></i>
+                            <i class="el-icon-monitor"></i>
                             <span slot="title">仪表盘</span>
                         </template>
-                        <el-menu-item index="/dashboard">首页</el-menu-item>
+                        <el-menu-item index="/dashboard"><i class="el-icon-house"></i>首页</el-menu-item>
                     </el-submenu>
                     <el-submenu index="2">
                         <template slot="title">
@@ -45,12 +46,20 @@
                             <i class="el-icon-user"></i>
                             <span slot="title">用户管理</span>
                         </template>
-                        <el-menu-item index="/user/list">用户列表</el-menu-item>
+                        <el-menu-item index="/user/list"><i class="el-icon-user"></i>用户列表</el-menu-item>
                     </el-submenu>
                 </el-menu>
 
             </el-aside>
             <el-main>
+<!--                <el-row>-->
+<!--                    <el-breadcrumb separator-class="el-icon-arrow-right">-->
+<!--                        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>-->
+<!--                        <el-breadcrumb-item>活动管理</el-breadcrumb-item>-->
+<!--                        <el-breadcrumb-item>活动列表</el-breadcrumb-item>-->
+<!--                        <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
+<!--                    </el-breadcrumb>-->
+<!--                </el-row>-->
                 <router-view :key="key"></router-view>
             </el-main>
         </el-container>
@@ -67,6 +76,9 @@
         },
         computed: {
             key() {
+                return this.$route.path
+            },
+            active() {
                 return this.$route.path
             }
         },

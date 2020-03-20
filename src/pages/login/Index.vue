@@ -55,9 +55,9 @@
                             this.loading = !this.loading;
                         }, 3000);
                         this.$api.login(this.ruleForm).then(v => {
-                            window.sessionStorage.setItem('token', v.data.tokenType + ' ' + v.data.accessToken)
+                            window.sessionStorage.setItem('token', v.data.token)
                             this.$router.push('/')
-                            this.$message.success('欢迎您，' + v.data.user.name + '！');
+                            // this.$message.success('欢迎您，' + v.data.user.name + '！');
                         })
                     } else {
                         this.$message.error('');

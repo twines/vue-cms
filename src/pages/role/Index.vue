@@ -2,7 +2,7 @@
     <el-card shadow="hover">
         <el-button @click="showDialog" type="primary" style="margin-top: 8px">添加角色</el-button>
 
-        <el-dialog title="添加角色" :visible.sync="dialogFormVisible">
+        <el-dialog title="添加角色" :visible.sync="addRoleDialogVisible">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item label="角色名称" prop="roleName">
                     <el-input v-model="ruleForm.roleName"></el-input>
@@ -11,7 +11,7 @@
                     <el-input type="textarea" v-model="ruleForm.description"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+                    <el-button type="primary" @click="addRole('ruleForm')">立即创建</el-button>
                     <el-button @click="resetForm('ruleForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -49,8 +49,8 @@
             <el-table-column prop="description" label="角色描述"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="primary" size="small">查看</el-button>
-                    <el-button @click="deleteRole" type="danger" size="small">删除</el-button>
+                    <el-button type="primary" size="small">查看</el-button>
+                    <el-button @click="deleteRole(scope.row.id)" type="danger" size="small">删除</el-button>
                     <el-button type="warning" size="small" @click="showPermission">编辑</el-button>
                 </template>
             </el-table-column>
@@ -60,10 +60,9 @@
                     :hide-on-single-page="true"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page.sync="currentPage3"
-                    :page-size="100"
+                    :current-page.sync="currentPage"
                     layout="prev, pager, next, jumper"
-                    :total="1000">
+                    :page-count="totalPage">
             </el-pagination>
         </div>
     </el-card>
@@ -75,10 +74,8 @@
         data() {
             return {
                 tableData: [],
-                currentPage1: 5,
-                currentPage2: 5,
-                currentPage3: 5,
-                currentPage4: 4,
+                currentPage: 1,
+                totalPage: 1,
                 ruleForm: {
                     roleName: '',
                     description: ''
@@ -131,7 +128,7 @@
                     children: 'children',
                     label: 'label'
                 },
-                dialogFormVisible: false,
+                addRoleDialogVisible: false,
                 permissionVisible: false,
             }
         },
@@ -139,15 +136,25 @@
             this.getRoleList()
         },
         methods: {
-            deleteRole() {
-                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            deleteRole(roleId) {
+                this.$confirm('此操作将永久该角色, 是否继续?', '删除角色', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
+                    this.$api.deleteRole(roleId).then(v => {
+                        if (v.code === 20000) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.getRoleList();
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败!'
+                            });
+                        }
                     });
                 }).catch(() => {
                     this.$message({
@@ -155,10 +162,8 @@
                         message: '已取消删除'
                     });
                 });
-                console.log(this.$refs.tree.getCheckedNodes());
             },
             changePermission() {
-                console.log(this.$refs.tree.getCheckedNodes());
             },
             resetChecked() {
                 this.$refs.tree.setCheckedKeys([]);
@@ -168,7 +173,7 @@
                     roleName: '',
                     description: ''
                 };
-                this.dialogFormVisible = !this.dialogFormVisible;
+                this.addRoleDialogVisible = !this.addRoleDialogVisible;
             },
             showPermission() {
                 this.permissionVisible = !this.permissionVisible
@@ -177,20 +182,15 @@
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
+                this.currentPage = val;
+                this.getRoleList();
                 console.log(`当前页: ${val}`);
             },
             getRoleList() {
-                let tmp = [];
-                for (let i = 1; i < 10; i++) {
-                    tmp.push(
-                        {
-                            id: i,
-                            roleName: '角色' + i,
-                            description: '角色描述' + i,
-                        }
-                    )
-                }
-                this.tableData = tmp
+                this.$api.getRoleList(this.currentPage).then(v => {
+                    this.tableData = v.data.data;
+                    this.totalPage = v.data.totalPage;
+                });
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -198,6 +198,24 @@
                         alert('submit!');
                     } else {
                         console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            addRole(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        // setTimeout(() => this.showDialog(), 5000)
+                        this.$api.addRole(this.ruleForm).then(v => {
+                            if (v.code === 20000) {
+                                this.showDialog();
+                                window.location.reload();
+                                this.$message.success("添加成功");
+                            } else {
+                                this.$message.success(v.message);
+                            }
+                        })
+                    } else {
                         return false;
                     }
                 });
