@@ -21,7 +21,6 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     response => {
         //拦截响应，做统一处理
-        console.log(response.data.code)
         if (response.data.code) {
             switch (response.data.code) {
                 case 4001:
@@ -42,6 +41,41 @@ instance.interceptors.response.use(
         return Promise.reject(error.response.status) // 返回接口返回的错误信息
     });
 
+function post(path, data) {
+    let formData = null;
+    if (data) {
+        formData = qs.stringify(data)
+    }
+    return instance.post(path, formData)
+        .then(function (response) {
+            return response.data
+        })
+        .catch(function (error) {
+            if (error === 401) {
+                router.push('/login');
+            }
+        })
+        .finally(function () {
+            // always executed
+        });
+}
+
+function get(path) {
+    return instance.get(path)
+        .then(function (response) {
+            // console.log(response);
+            return response.data
+        })
+        .catch(function (error) {
+            if (error === 401) {
+                router.push('/login');
+            }
+        })
+        .finally(function () {
+            // always executed
+        });
+}
+
 const api = {
     login: function (data) {
         return instance.post('/admin/v1/login', qs.stringify(data))
@@ -57,17 +91,7 @@ const api = {
             });
     },
     getRoleList: function (page) {
-        return instance.get('/admin/v1/role/list?page=' + page)
-            .then(function (response) {
-                // console.log(response);
-                return response.data
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .finally(function () {
-                // always executed
-            });
+        return get('/admin/v1/role/list?page=' + page)
     },
     deleteRole: function (roleId) {
         return instance.delete('/admin/v1/role/delete/' + roleId)
@@ -83,17 +107,13 @@ const api = {
             });
     },
     addRole: function (data) {
-        return instance.post('/admin/v1/role/add', qs.stringify(data))
-            .then(function (response) {
-                // console.log(response);
-                return response.data
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .finally(function () {
-                // always executed
-            });
+        return post('/admin/v1/role/add', data)
+    },
+    getRolePermission: function (roleId) {
+        return get('/admin/v1/role/permission/' + roleId)
+    },
+    changePermission: function (roleId, permissionList) {
+        return post('/admin/v1/role/permission/' + roleId, {'permissionList': permissionList})
     }
 
 };

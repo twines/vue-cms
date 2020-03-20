@@ -20,11 +20,12 @@
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item>
                     <el-tree
-                            :data="data"
+                            :data="permissionList"
                             show-checkbox
                             default-expand-all
                             node-key="id"
                             ref="tree"
+                            :default-checked-keys="rolePermissionList"
                             highlight-current
                             :props="defaultProps">
                     </el-tree>
@@ -32,7 +33,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="changePermission">确认</el-button>
+                    <el-button type="primary" :loading="loading" @click="changePermission">确认</el-button>
                     <el-button @click="resetChecked">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -51,7 +52,7 @@
                 <template slot-scope="scope">
                     <el-button type="primary" size="small">查看</el-button>
                     <el-button @click="deleteRole(scope.row.id)" type="danger" size="small">删除</el-button>
-                    <el-button type="warning" size="small" @click="showPermission">编辑</el-button>
+                    <el-button type="warning" size="small" @click="showPermission(scope.row.id)">编辑</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -80,6 +81,8 @@
                     roleName: '',
                     description: ''
                 },
+                loading: false,
+                roleId: 0,
                 rules: {
                     roleName: [
                         {required: true, message: '请输入角色名称', trigger: 'blur'},
@@ -89,41 +92,8 @@
                         {required: true, message: '请填写活动形式', trigger: 'blur'}
                     ]
                 },
-                data: [{
-                    id: 1,
-                    label: '一级 1',
-                    children: [{
-                        id: 4,
-                        label: '二级 1-1',
-                        children: [{
-                            id: 9,
-                            label: '三级 1-1-1'
-                        }, {
-                            id: 10,
-                            label: '三级 1-1-2'
-                        }]
-                    }]
-                }, {
-                    id: 2,
-                    label: '一级 2',
-                    children: [{
-                        id: 5,
-                        label: '二级 2-1'
-                    }, {
-                        id: 6,
-                        label: '二级 2-2'
-                    }]
-                }, {
-                    id: 3,
-                    label: '一级 3',
-                    children: [{
-                        id: 7,
-                        label: '二级 3-1'
-                    }, {
-                        id: 8,
-                        label: '二级 3-2'
-                    }]
-                }],
+                permissionList: [],
+                rolePermissionList: [5, 2],
                 defaultProps: {
                     children: 'children',
                     label: 'label'
@@ -164,6 +134,19 @@
                 });
             },
             changePermission() {
+                let permissionList = this.$refs.tree.getCheckedKeys();
+                this.loading = true;
+                this.$api.changePermission(this.roleId, permissionList).then((v) => {
+                    setTimeout(() => {
+                        this.showPermission(this.roleId);
+                        this.loading = false;
+                    }, 500)
+                    if (v.code === 20000) {
+                        this.$message.success('更新成功');
+                    } else {
+                        this.$message.error(v.message);
+                    }
+                })
             },
             resetChecked() {
                 this.$refs.tree.setCheckedKeys([]);
@@ -175,7 +158,9 @@
                 };
                 this.addRoleDialogVisible = !this.addRoleDialogVisible;
             },
-            showPermission() {
+            showPermission(roleId) {
+                this.roleId = roleId;
+                this.getRolePermission(roleId);
                 this.permissionVisible = !this.permissionVisible
             },
             handleSizeChange(val) {
@@ -191,6 +176,44 @@
                     this.tableData = v.data.data;
                     this.totalPage = v.data.totalPage;
                 });
+            },
+            getRolePermission(roleId) {
+                this.$api.getRolePermission(roleId).then(v => {
+                    let parentPermission = [];
+                    let childPermission = new Map();
+                    let permissionList = [];
+                    v.data.permissionSlice.forEach(permission => {
+                        permissionList.push(permission.id);
+                        permissionList.push(permission.parentId);
+                    });
+                    this.rolePermissionList = permissionList;
+
+                    v.data.allPermissions.forEach(permission => {
+                        let tmp = {};
+                        tmp.id = permission.id;
+                        tmp.label = permission.title;
+                        tmp.parentId = permission.parentId;
+                        if (permission.parentId === 0) {
+                            tmp.children = [];
+                            parentPermission.push(tmp)
+                        } else {
+                            if (!childPermission.has(tmp.parentId)) {
+                                childPermission.set(tmp.parentId, [tmp]);
+                            } else {
+                                let t = childPermission.get(tmp.parentId)
+                                t.push(tmp)
+                                childPermission.set(tmp.parentId, t);
+                            }
+                        }
+                    });
+                    parentPermission.forEach((p, i) => {
+                        if (childPermission.has(p.id)) {
+                            p.children = childPermission.get(p.id)
+                            parentPermission[i] = p
+                        }
+                    });
+                    this.permissionList = parentPermission
+                })
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

@@ -37,7 +37,7 @@ const routes = [
         children: [
             {
                 path: 'list',
-                component: User
+                component: User,
             },
         ]
     },
