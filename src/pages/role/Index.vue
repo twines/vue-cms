@@ -192,6 +192,8 @@
                         let tmp = {};
                         tmp.id = permission.id;
                         tmp.label = permission.title;
+                        tmp.path = permission.path;
+                        tmp.icon = permission.icon;
                         tmp.parentId = permission.parentId;
                         if (permission.parentId === 0) {
                             tmp.children = [];

@@ -27,40 +27,32 @@
                         unique-opened
                         :collapse-transition="false"
                         :collapse="isCollapse">
-                    <el-submenu index="1">
+                    <el-submenu v-for="permission in permissionList"
+                                :index="permission.id+''"
+                                :key="permission.id+''">
                         <template slot="title">
-                            <i class="el-icon-monitor"></i>
-                            <span slot="title">仪表盘</span>
+                            <i :class="permission.icon"></i>
+                            <span slot="title">{{permission.label}}</span>
                         </template>
-                        <el-menu-item index="/dashboard"><i class="el-icon-house"></i>首页</el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="2">
-                        <template slot="title">
-                            <i class="el-icon-location"></i>
-                            <span slot="title">权限管理</span>
-                        </template>
-                        <el-menu-item index="/role/list">角色列表</el-menu-item>
-                        <el-menu-item index="/admin/list">管理员列表</el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="3">
-                        <template slot="title">
-                            <i class="el-icon-user"></i>
-                            <span slot="title">用户管理</span>
-                        </template>
-                        <el-menu-item index="/user/list"><i class="el-icon-user"></i>用户列表</el-menu-item>
+                        <el-menu-item v-for="childPermission in permission.children"
+                                      :index="childPermission.path"
+                                      :key="childPermission.id+''">
+                            <i :class="childPermission.icon"></i>
+                            {{childPermission.label}}
+                        </el-menu-item>
                     </el-submenu>
                 </el-menu>
 
             </el-aside>
             <el-main>
-<!--                <el-row>-->
-<!--                    <el-breadcrumb separator-class="el-icon-arrow-right">-->
-<!--                        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>-->
-<!--                        <el-breadcrumb-item>活动管理</el-breadcrumb-item>-->
-<!--                        <el-breadcrumb-item>活动列表</el-breadcrumb-item>-->
-<!--                        <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
-<!--                    </el-breadcrumb>-->
-<!--                </el-row>-->
+                <!--                <el-row>-->
+                <!--                    <el-breadcrumb separator-class="el-icon-arrow-right">-->
+                <!--                        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>-->
+                <!--                        <el-breadcrumb-item>活动管理</el-breadcrumb-item>-->
+                <!--                        <el-breadcrumb-item>活动列表</el-breadcrumb-item>-->
+                <!--                        <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
+                <!--                    </el-breadcrumb>-->
+                <!--                </el-row>-->
                 <router-view :key="key"></router-view>
             </el-main>
         </el-container>
@@ -72,8 +64,12 @@
         name: "HomeIndex",
         data() {
             return {
-                isCollapse: false
+                isCollapse: false,
+                permissionList: []
             };
+        },
+        mounted() {
+            this.getRolePermission(8);
         },
         computed: {
             key() {
@@ -89,6 +85,48 @@
             },
             handleClose(key, keyPath) {
                 console.log(key, keyPath);
+            },
+            getRolePermission(roleId) {
+                this.$api.getRolePermission(roleId).then(v => {
+                    let parentPermission = [];
+                    let childPermission = new Map();
+                    let permissionSet = new Set()
+                    v.data.permissionSlice.forEach(permission => {
+                        permissionSet.add(permission.id)
+                        permissionSet.add(permission.parentId)
+                    });
+
+                    v.data.allPermissions.forEach(permission => {
+                        if (permissionSet.has(permission.id)) {
+                            let tmp = {};
+                            tmp.id = permission.id;
+                            tmp.label = permission.title;
+                            tmp.path = permission.path;
+                            tmp.icon = permission.icon;
+                            tmp.parentId = permission.parentId;
+                            if (permission.parentId === 0) {
+                                tmp.children = [];
+                                parentPermission.push(tmp)
+                            } else {
+                                if (!childPermission.has(tmp.parentId)) {
+                                    childPermission.set(tmp.parentId, [tmp]);
+                                } else {
+                                    let t = childPermission.get(tmp.parentId)
+                                    t.push(tmp)
+                                    childPermission.set(tmp.parentId, t);
+                                }
+                            }
+                        }
+                    });
+                    parentPermission.forEach((p, i) => {
+                        if (childPermission.has(p.id)) {
+                            p.children = childPermission.get(p.id)
+                            parentPermission[i] = p
+                        }
+                    });
+                    this.permissionList = parentPermission;
+                    console.log(this.permissionList);
+                })
             },
             handleCommand(command) {
                 switch (command) {
@@ -132,17 +170,18 @@
         display: flex;
         justify-content: space-between;
 
-        #logo {
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
+    #logo {
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
 
-            img {
-                border-radius: 50%;
-                width: 100%;
-                height: 100%;
-            }
-        }
+    img {
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+    }
+
+    }
 
 
     }
