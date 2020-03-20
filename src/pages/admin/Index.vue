@@ -10,7 +10,19 @@
                     <el-input type="text" clearable v-model="ruleForm.name"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input type="password" clearable v-model="ruleForm.password"></el-input>
+                    <el-input type="password" show-password v-model="ruleForm.password"></el-input>
+                </el-form-item>
+                <el-form-item label="真实姓名" prop="trueName">
+                    <el-input type="text" clearable v-model="ruleForm.trueName"></el-input>
+                </el-form-item>
+                <el-form-item label="QQ" prop="qq">
+                    <el-input type="text" clearable v-model="ruleForm.qq"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input type="email" clearable v-model="ruleForm.email"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号" prop="mobile">
+                    <el-input type="mobile" clearable v-model="ruleForm.mobile"></el-input>
                 </el-form-item>
                 <el-form-item label="所属角色" prop="role">
                     <el-select v-model="ruleForm.role" placeholder="请选择角色">
@@ -19,7 +31,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+                    <el-button :loading="loading" type="primary" @click="addAdmin()">添加</el-button>
                     <el-button @click="resetForm('ruleForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -78,9 +90,14 @@
                 currentPage: 1,
                 ruleForm: {
                     name: '',
+                    trueName: '',
                     role: '',
+                    qq: '',
+                    email: '',
+                    mobile: '',
                     password: ''
                 },
+                loading: false,
                 rules: {
                     name: [
                         {required: true, message: '请输入管理员名称', trigger: 'blur'},
@@ -88,13 +105,13 @@
                     ],
                     password: [
                         {required: true, message: '请填写密码', trigger: 'blur'},
-                        {min: 6, max: 20, message: '密码长度在 3 到 20 个字符', trigger: 'blur'}
+                        {min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur'}
                     ],
                     role: [
                         {required: true, message: '请选择角色', trigger: 'change'}
                     ]
                 },
-                dialogFormVisible: false,
+                dialogFormVisible: true,
             }
         },
         created() {
@@ -114,17 +131,25 @@
                 this.$api.getAdminList(this.currentPage).then(v => {
                     this.tableData = v.data.data
                 });
-                // let tmp = [];
-                // for (let i = 1; i < 10; i++) {
-                //     tmp.push(
-                //         {
-                //             id: i,
-                //             name: '角色' + i,
-                //             password: '角色描述' + i,
-                //         }
-                //     )
-                // }
-                // this.tableData = tmp
+            },
+            addAdmin() {
+                this.$refs['ruleForm'].validate((valid) => {
+                    if (valid) {
+                        this.loading = true;
+                        setTimeout(() => {
+                            this.loading = false;
+                        }, 5000);
+                        this.$api.addAdmin(this.ruleForm).then(v => {
+                            this.showDialog();
+                            this.loading = false;
+                            if (v.code === 20000) {
+                                this.$message.success('添加成功');
+                            } else {
+                                this.$message.error(v.message);
+                            }
+                        })
+                    }
+                });
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

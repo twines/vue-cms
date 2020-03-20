@@ -117,6 +117,9 @@ const api = {
     },
     getAdminList: function (page) {
         return get('/admin/v1/admin/list?page=' + page)
+    },
+    addAdmin: function (data) {
+        return post('/admin/v1/admin/add', data)
     }
 
 };
