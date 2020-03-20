@@ -73,9 +73,8 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page.sync="currentPage"
-                    :page-size="100"
                     layout="prev, pager, next, jumper"
-                    :total="1000">
+                    :page-count="totalPage">
             </el-pagination>
         </div>
     </el-card>
@@ -88,6 +87,7 @@
             return {
                 tableData: [],
                 currentPage: 1,
+                totalPage: 1,
                 ruleForm: {
                     name: '',
                     trueName: '',
@@ -111,11 +111,11 @@
                         {required: true, message: '请选择角色', trigger: 'change'}
                     ]
                 },
-                dialogFormVisible: true,
+                dialogFormVisible: false,
             }
         },
         created() {
-            this.getRoleList()
+            this.getAdminList();
         },
         methods: {
             showDialog() {
@@ -125,11 +125,14 @@
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
+                this.currentPage = val;
+                this.getAdminList();
                 console.log(`当前页: ${val}`);
             },
-            getRoleList() {
+            getAdminList() {
                 this.$api.getAdminList(this.currentPage).then(v => {
                     this.tableData = v.data.data
+                    this.totalPage = v.data.totalPage
                 });
             },
             addAdmin() {
