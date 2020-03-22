@@ -93,7 +93,7 @@
                     ]
                 },
                 permissionList: [],
-                rolePermissionList: [5, 2],
+                rolePermissionList: [],
                 defaultProps: {
                     children: 'children',
                     label: 'label'
@@ -184,10 +184,9 @@
                     let permissionList = [];
                     v.data.permissionSlice.forEach(permission => {
                         permissionList.push(permission.id);
-                        permissionList.push(permission.parentId);
                     });
                     this.rolePermissionList = permissionList;
-
+                    console.log(this.rolePermissionList);
                     v.data.allPermissions.forEach(permission => {
                         let tmp = {};
                         tmp.id = permission.id;

@@ -2,19 +2,8 @@
     <el-card shadow="hover">
         <el-row :gutter="20">
             <el-col :span="12">
-                <el-input placeholder="请输入内容" v-model="keyword" clearable>
-                    <el-select v-model="select" slot="prepend" placeholder="选择条件" class="prefix-text">
-                        <el-option label="正常" value="1"></el-option>
-                        <el-option label="黑名单" value="2"></el-option>
-                        <el-option label="已经实名" value="3"></el-option>
-                    </el-select>
-                    <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
-                </el-input>
+                <el-button @click="showDialog" type="primary">添加banner</el-button>
             </el-col>
-            <el-col :span="12">
-                <el-button @click="showDialog" type="primary">添加用户</el-button>
-            </el-col>
-
         </el-row>
         <el-dialog title="添加用户" :visible.sync="userAddDialogVisible">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">

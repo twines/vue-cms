@@ -6,6 +6,8 @@ import Dashboard from '../pages/dashboard/Index'
 import Role from '../pages/role/Index'
 import User from '../pages/user/Index'
 import Admin from '../pages/admin/Index'
+import Banner from '../pages/setting/Banner'
+import News from '../pages/setting/News'
 
 vue.use(VueRouter);
 const routes = [
@@ -42,6 +44,21 @@ const routes = [
             {
                 path: 'list',
                 component: User,
+            },
+        ]
+    },
+    {
+        path: '/setting',
+        component: Home,
+        redirect: '/setting/banner',
+        children: [
+            {
+                path: '/setting/banner',
+                component: Banner,
+            },
+            {
+                path: '/setting/news',
+                component: News,
             },
         ]
     },
