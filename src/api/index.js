@@ -158,8 +158,11 @@ const api = {
     getUserList(page, keyword) {
         return get('/admin/v1/user/list?page=' + page + '&keyword=' + keyword)
     },
-    getNewsList(page) {
+    getNewsList: function (page) {
         return get('/admin/v1/news/list?page=' + page)
+    },
+    addNews: function (data) {
+        return post('/admin/v1/news/add', data)
     }
 };
 export default api

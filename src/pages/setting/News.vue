@@ -5,16 +5,22 @@
                 <el-button @click="showDialog" type="primary">添加新闻公告</el-button>
             </el-col>
         </el-row>
-        <el-dialog title="添加新闻公告" :visible.sync="userAddDialogVisible">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-                <el-form-item label="用户名称" prop="userName">
-                    <el-input v-model="ruleForm.userName"></el-input>
+        <el-dialog title="添加新闻公告" :visible.sync="newsAddDialogVisible">
+            <el-form :model="ruleForm" :rules="newsRules" ref="ruleForm">
+                <el-form-item label="标题" prop="title">
+                    <el-input v-model="ruleForm.title"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input type="password" v-model="ruleForm.password"></el-input>
+                <el-form-item label="内容" prop="content">
+                    <el-input v-model="ruleForm.content"></el-input>
+                </el-form-item>
+                <el-form-item label="关键词" prop="keyword">
+                    <el-input v-model="ruleForm.keyword"></el-input>
+                </el-form-item>
+                <el-form-item label="描述" prop="description">
+                    <el-input v-model="ruleForm.description"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" :loading="loading" @click="addUser">添加</el-button>
+                    <el-button type="primary" :loading="loading" @click="addNews">添加</el-button>
                     <el-button @click="resetForm('ruleForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -86,20 +92,29 @@
                 select: '',
                 currentPage: 1,
                 ruleForm: {
-                    userName: '',
-                    password: ''
+                    title: '',
+                    keyword: '',
+                    content: '',
+                    description: ''
                 },
-                rules: {
-                    userName: [
-                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                newsRules: {
+                    title: [
+                        {required: true, message: '请输入标题', trigger: 'blur'},
                         {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
                     ],
-                    password: [
-                        {required: true, message: '请输入密码', trigger: 'blur'},
-                        {min: 3, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur'}
+                    keyword: [
+                        {required: true, message: '请输入标题', trigger: 'blur'},
+                        {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+                    ],
+                    description: [
+                        {required: true, message: '请输入描述', trigger: 'blur'},
+                        {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+                    ],
+                    content: [
+                        {required: true, message: '请输入内容', trigger: 'blur'}
                     ]
                 },
-                userAddDialogVisible: false,
+                newsAddDialogVisible: false,
                 userInfo: false,
             }
         },
@@ -139,7 +154,7 @@
                     userName: '',
                     password: ''
                 };
-                this.userAddDialogVisible = !this.userAddDialogVisible;
+                this.newsAddDialogVisible = !this.newsAddDialogVisible;
             },
             showUserInfo(userId) {
                 this.userInfo = !this.userInfo;
@@ -151,6 +166,8 @@
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
+                this.currentPage = val;
+                this.getNewsList();
                 console.log(`当前页: ${val}`);
             },
             getNewsList() {
@@ -172,12 +189,12 @@
                     }
                 });
             },
-            addUser() {
+            addNews() {
                 this.$refs['ruleForm'].validate((valid) => {
                     if (valid) {
                         this.loading = true;
                         setTimeout(() => this.loading = false, 5000);
-                        this.$api.addUser(this.ruleForm).then(v => {
+                        this.$api.addNews(this.ruleForm).then(v => {
                             this.showDialog();
                             this.loading = false;
                             if (v.code === 20000) {
