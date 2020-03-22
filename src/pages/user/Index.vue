@@ -18,8 +18,8 @@
         </el-row>
         <el-dialog title="添加用户" :visible.sync="userAddDialogVisible">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-                <el-form-item label="用户名称" prop="roleName">
-                    <el-input v-model="ruleForm.roleName"></el-input>
+                <el-form-item label="用户名称" prop="userName">
+                    <el-input v-model="ruleForm.userName"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
                     <el-input type="password" v-model="ruleForm.password"></el-input>
@@ -32,8 +32,8 @@
         </el-dialog>
         <el-dialog title="编辑用户信息" :visible.sync="userInfo">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-                <el-form-item label="用户名称" prop="roleName">
-                    <el-input v-model="ruleForm.roleName"></el-input>
+                <el-form-item label="用户名称" prop="userName">
+                    <el-input v-model="ruleForm.userName"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
                     <el-input type="password" v-model="ruleForm.password"></el-input>
@@ -105,11 +105,11 @@
                 select: '',
                 currentPage: 1,
                 ruleForm: {
-                    roleName: '',
+                    userName: '',
                     password: ''
                 },
                 rules: {
-                    roleName: [
+                    userName: [
                         {required: true, message: '请输入用户名称', trigger: 'blur'},
                         {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
                     ],
@@ -151,7 +151,7 @@
             },
             showDialog() {
                 this.ruleForm = {
-                    roleName: '',
+                    userName: '',
                     password: ''
                 };
                 this.userAddDialogVisible = !this.userAddDialogVisible;
