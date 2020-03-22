@@ -196,6 +196,7 @@
                             this.showDialog();
                             this.loading = false;
                             if (v.code === 20000) {
+                                setTimeout(() => window.location.reload(), 500);
                                 this.$message.success('添加成功');
                             } else {
                                 this.$message.error(v.message);
