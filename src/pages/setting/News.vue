@@ -2,10 +2,10 @@
     <el-card shadow="hover">
         <el-row :gutter="20">
             <el-col :span="12">
-                <el-button @click="showDialog" type="primary">添加banner</el-button>
+                <el-button @click="showDialog" type="primary">添加新闻公告</el-button>
             </el-col>
         </el-row>
-        <el-dialog title="添加用户" :visible.sync="userAddDialogVisible">
+        <el-dialog title="添加新闻公告" :visible.sync="userAddDialogVisible">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item label="用户名称" prop="userName">
                     <el-input v-model="ruleForm.userName"></el-input>
@@ -41,17 +41,9 @@
             </el-table-column>
 
             <el-table-column prop="id" label="ID"></el-table-column>
-            <el-table-column prop="name" label="用户名称"></el-table-column>
-            <el-table-column prop="trueName" label="真实姓名"></el-table-column>
-            <el-table-column prop="qq" label="QQ"></el-table-column>
-            <el-table-column prop="mobile" label="手机号"></el-table-column>
-            <el-table-column prop="email" label="邮箱"></el-table-column>
-            <el-table-column prop="gender" label="性别">
-                <template slot-scope="scope">
-                    <span v-if="scope.row.gender===1">男</span>
-                    <span v-else>女</span>
-                </template>
-            </el-table-column>
+            <el-table-column prop="title" label="标题"></el-table-column>
+            <el-table-column prop="description" label="描述"></el-table-column>
+            <el-table-column prop="keyword" label="关键词"></el-table-column>
             <el-table-column prop="status" label="状态">
                 <template slot-scope="scope">
                     <span v-if="scope.row.status===1">
@@ -112,11 +104,11 @@
             }
         },
         created() {
-            this.getUserList()
+            this.getNewsList()
         },
         methods: {
             search() {
-                this.getUserList();
+                this.getNewsList();
             },
             deleteUser(userId) {
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -161,8 +153,8 @@
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
             },
-            getUserList() {
-                this.$api.getUserList(this.currentPage, this.keyword).then(v => {
+            getNewsList() {
+                this.$api.getNewsList(this.currentPage).then(v => {
                     this.tableData = v.data.data;
                     this.totalPage = v.data.totalPage;
                 });

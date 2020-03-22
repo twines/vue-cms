@@ -157,6 +157,9 @@ const api = {
     },
     getUserList(page, keyword) {
         return get('/admin/v1/user/list?page=' + page + '&keyword=' + keyword)
+    },
+    getNewsList(page) {
+        return get('/admin/v1/news/list?page=' + page)
     }
 };
 export default api
