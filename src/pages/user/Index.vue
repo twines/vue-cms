@@ -169,22 +169,10 @@
                 console.log(`当前页: ${val}`);
             },
             getUserList() {
-                let tmp = [];
-                for (let i = 1; i < 20; i++) {
-                    tmp.push(
-                        {
-                            id: i,
-                            username: '用户' + i,
-                            trueName: 'hanyun' + i,
-                            qq: '1355081829',
-                            mobile: '15701308875',
-                            email: '1355081829@qq.com',
-                            gender: i % 2,
-                            status: i % 3
-                        }
-                    );
-                }
-                this.tableData = tmp
+                this.$api.getUserList(this.currentPage, '').then(v => {
+                    this.tableData = v.data.data
+
+                });
             },
             getUserById(userId) {
                 return this.$api.getUserById(userId)
@@ -208,7 +196,7 @@
                             this.showDialog();
                             this.loading = false;
                             if (v.code === 20000) {
-                                this.$message.success('提价成功');
+                                this.$message.success('添加成功');
                             } else {
                                 this.$message.error(v.message);
                             }

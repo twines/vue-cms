@@ -154,7 +154,9 @@ const api = {
     },
     getUserById: function (userId) {
         return get('/admin/v1/user/' + userId)
+    },
+    getUserList(page, keyword) {
+        return get('/admin/v1/user/list?page=' + page + '&keyword=' + keyword)
     }
-
 };
 export default api
