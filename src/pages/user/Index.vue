@@ -76,7 +76,7 @@
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button @click="deleteUser(scope.row.id)" type="danger" size="small">删除</el-button>
-                    <el-button type="warning" size="small" @click="showUserInfo">编辑</el-button>
+                    <el-button type="warning" size="small" @click="showUserInfo(scope.row.id)">编辑</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -85,7 +85,7 @@
                     :hide-on-single-page="true"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page.sync="currentPage3"
+                    :current-page.sync="currentPage"
                     :page-size="100"
                     layout="prev, pager, next, jumper"
                     :total="1000">
@@ -103,10 +103,7 @@
                 loading: false,
                 input3: '',
                 select: '',
-                currentPage1: 5,
-                currentPage2: 5,
-                currentPage3: 5,
-                currentPage4: 4,
+                currentPage: 1,
                 ruleForm: {
                     roleName: '',
                     password: ''
@@ -141,7 +138,7 @@
                                 type: 'success',
                                 message: '删除成功!'
                             });
-                        }else{
+                        } else {
                             this.$message.error('删除失败');
                         }
                     });
@@ -159,8 +156,11 @@
                 };
                 this.userAddDialogVisible = !this.userAddDialogVisible;
             },
-            showUserInfo() {
-                this.userInfo = !this.userInfo
+            showUserInfo(userId) {
+                this.userInfo = !this.userInfo;
+                this.getUserById(userId).then(v => {
+                    this.ruleForm = v.data
+                });
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
@@ -185,6 +185,9 @@
                     );
                 }
                 this.tableData = tmp
+            },
+            getUserById(userId) {
+                return this.$api.getUserById(userId)
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

@@ -151,6 +151,9 @@ const api = {
     },
     deleteUser: function (userId) {
         return del('/admin/v1/user/' + userId)
+    },
+    getUserById: function (userId) {
+        return get('/admin/v1/user/' + userId)
     }
 
 };
