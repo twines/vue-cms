@@ -16,7 +16,7 @@
             </el-col>
 
         </el-row>
-        <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+        <el-dialog title="添加用户" :visible.sync="userAddDialogVisible">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item label="用户名称" prop="roleName">
                     <el-input v-model="ruleForm.roleName"></el-input>
@@ -25,7 +25,7 @@
                     <el-input type="password" v-model="ruleForm.password"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
+                    <el-button type="primary" :loading="loading" @click="addUser">添加</el-button>
                     <el-button @click="resetForm('ruleForm')">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -100,6 +100,7 @@
         data() {
             return {
                 tableData: [],
+                loading: false,
                 input3: '',
                 select: '',
                 currentPage1: 5,
@@ -120,7 +121,7 @@
                         {min: 3, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur'}
                     ]
                 },
-                dialogFormVisible: false,
+                userAddDialogVisible: false,
                 userInfo: false,
             }
         },
@@ -128,15 +129,21 @@
             this.getUserList()
         },
         methods: {
-            deleteUser(id) {
+            deleteUser(userId) {
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
+                    this.$api.deleteUser(userId).then(v => {
+                        if (v.code === 20000) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                        }else{
+                            this.$message.error('删除失败');
+                        }
                     });
                 }).catch(() => {
                     this.$message({
@@ -144,14 +151,13 @@
                         message: '已取消删除'
                     });
                 });
-                console.log(id);
             },
             showDialog() {
                 this.ruleForm = {
                     roleName: '',
                     password: ''
                 };
-                this.dialogFormVisible = !this.dialogFormVisible;
+                this.userAddDialogVisible = !this.userAddDialogVisible;
             },
             showUserInfo() {
                 this.userInfo = !this.userInfo
@@ -184,6 +190,26 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            addUser() {
+                this.$refs['ruleForm'].validate((valid) => {
+                    if (valid) {
+                        this.loading = true;
+                        setTimeout(() => this.loading = false, 5000);
+                        this.$api.addUser(this.ruleForm).then(v => {
+                            this.showDialog();
+                            this.loading = false;
+                            if (v.code === 20000) {
+                                this.$message.success('提价成功');
+                            } else {
+                                this.$message.error(v.message);
+                            }
+                        })
                     } else {
                         console.log('error submit!!');
                         return false;

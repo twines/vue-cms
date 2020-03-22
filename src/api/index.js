@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
-// import {Message} from 'element-ui';
-import router from '@/router'  //引入router
+import router from '@/router'
+import {Message} from "element-ui";
 
 const instance = axios.create({
     baseURL: 'http://127.0.0.1',
@@ -51,13 +51,40 @@ function post(path, data) {
             return response.data
         })
         .catch(function (error) {
-            if (error === 401) {
-                router.push('/login');
-            }
+            errorAction(error, path);
         })
         .finally(function () {
             // always executed
         });
+}
+
+function del(path, data) {
+    let formData = null;
+    if (data) {
+        formData = qs.stringify(data)
+    }
+    return instance.delete(path, formData)
+        .then(function (response) {
+            return response.data
+        })
+        .catch(function (error) {
+            errorAction(error, path);
+        })
+        .finally(function () {
+            // always executed
+        });
+}
+
+function errorAction(error, path) {
+    switch (error) {
+        case 401:
+            router.push('/login');
+            break;
+        case 404:
+            Message.error(`接口地址${path}不可用`);
+            break;
+        default:
+    }
 }
 
 function get(path) {
@@ -67,9 +94,7 @@ function get(path) {
             return response.data
         })
         .catch(function (error) {
-            if (error === 401) {
-                router.push('/login');
-            }
+            errorAction(error, path);
         })
         .finally(function () {
             // always executed
@@ -120,6 +145,12 @@ const api = {
     },
     addAdmin: function (data) {
         return post('/admin/v1/admin/add', data)
+    },
+    addUser: function (data) {
+        return post('/admin/v1/user/add', data)
+    },
+    deleteUser: function (userId) {
+        return del('/admin/v1/user/' + userId)
     }
 
 };
