@@ -163,6 +163,9 @@ const api = {
     },
     addNews: function (data) {
         return post('/admin/v1/news/add', data)
+    },
+    deleteNews: function (newsId) {
+        return del('/admin/v1/news/delete/' + newsId)
     }
 };
 export default api

@@ -62,7 +62,7 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="deleteUser(scope.row.id)" type="danger" size="small">删除</el-button>
+                    <el-button @click="deleteNews(scope.row.id)" type="danger" size="small">删除</el-button>
                     <el-button type="warning" size="small" @click="showUserInfo(scope.row.id)">编辑</el-button>
                 </template>
             </el-table-column>
@@ -97,6 +97,16 @@
                     content: '',
                     description: ''
                 },
+                rules: {
+                    userName: [
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                        {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+                    ],
+                    password: [
+                        {required: true, message: '请输入密码', trigger: 'blur'},
+                        {min: 3, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur'}
+                    ]
+                },
                 newsRules: {
                     title: [
                         {required: true, message: '请输入标题', trigger: 'blur'},
@@ -125,13 +135,13 @@
             search() {
                 this.getNewsList();
             },
-            deleteUser(userId) {
-                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            deleteNews(newsId) {
+                this.$confirm('此操作将永久该角色, 是否继续?', '删除角色', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$api.deleteUser(userId).then(v => {
+                    this.$api.deleteNews(newsId).then(v => {
                         if (v.code === 20000) {
                             setTimeout(() => window.location.reload(), 500);
                             this.$message({
@@ -139,7 +149,10 @@
                                 message: '删除成功!'
                             });
                         } else {
-                            this.$message.error('删除失败');
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败!'
+                            });
                         }
                     });
                 }).catch(() => {
