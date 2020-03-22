@@ -158,6 +158,9 @@ const api = {
     getUserList(page, keyword) {
         return get('/admin/v1/user/list?page=' + page + '&keyword=' + keyword)
     },
+    getNewsById: function (newsId) {
+        return get('/admin/v1/news/detail/' + newsId)
+    },
     getNewsList: function (page) {
         return get('/admin/v1/news/list?page=' + page)
     },
@@ -166,6 +169,9 @@ const api = {
     },
     deleteNews: function (newsId) {
         return del('/admin/v1/news/delete/' + newsId)
+    },
+    updateNews: function (newsId, data) {
+        return post('/admin/v1/news/update/' + newsId, data)
     }
 };
 export default api
