@@ -20,6 +20,9 @@
                 <el-button type="text" v-else @click="openMenu()">关闭</el-button>
                 <el-menu
                         style="border:none"
+                        background-color="#545c64"
+                        text-color="#fff"
+                        active-text-color="#ffd04b"
                         @open="handleOpen"
                         @close="handleClose"
                         router
@@ -158,13 +161,16 @@
         margin: 0 auto;
     }
 
-    .el-dropdown {
-        margin-right: 16px;
+    .el-aside {
+        background: #545c64;
     }
 
+    .el-dropdown {
+        margin-right: 16px;
+        color: #fff;
+    }
     .el-header {
-        background-color: #B3C0D1;
-        color: #333;
+        background-color: #545c64;
         height: 68px !important;
         align-items: center;
         display: flex;

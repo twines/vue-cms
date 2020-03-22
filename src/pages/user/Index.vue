@@ -127,6 +127,7 @@
         },
         methods: {
             search() {
+                this.currentPage = 1;
                 this.getUserList();
             },
             deleteUser(userId) {
@@ -170,6 +171,8 @@
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
+                this.currentPage = val;
+                this.getUserList();
                 console.log(`当前页: ${val}`);
             },
             getUserList() {
