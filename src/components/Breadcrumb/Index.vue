@@ -33,7 +33,7 @@
                 const first = matched[0]
 
                 if (!this.isDashboard(first)) {
-                    matched = [{path: '/dashboard', redirect: 'noRedirect', meta: {title: '仪表盘'}}].concat(matched)
+                    matched = [{path: '/', redirect: '/', meta: {title: '首页'}}].concat(matched)
                 }
                 this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
             },
