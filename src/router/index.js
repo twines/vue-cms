@@ -4,7 +4,8 @@ import Login from '../pages/login/Index'
 import Home from '../pages/home/Index'
 import Dashboard from '../pages/dashboard/Index'
 import Role from '../pages/role/Index'
-import User from '../pages/user/Index'
+import UserList from '../pages/user/List'
+import UserGroup from '../pages/user/Group'
 import Admin from '../pages/admin/Index'
 import Banner from '../pages/setting/Banner'
 import News from '../pages/setting/News'
@@ -15,7 +16,7 @@ const routes = [
         path: '/',
         component: Home,
         redirect: '/dashboard',
-        meta: {title: '仪表盘',breadcrumb:false},
+        meta: {title: '仪表盘', breadcrumb: false},
         children: [
             {
                 path: '/dashboard',
@@ -50,8 +51,13 @@ const routes = [
         children: [
             {
                 meta: {title: '用户列表'},
-                path: 'list',
-                component: User,
+                path: '/user/list',
+                component: UserList,
+            },
+            {
+                meta: {title: '用户组'},
+                path: '/user/group',
+                component: UserGroup,
             },
         ]
     },
