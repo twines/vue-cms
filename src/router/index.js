@@ -80,6 +80,24 @@ const routes = [
         ]
     },
     {
+        path: '/blog',
+        component: Home,
+        redirect: 'noRedirect',
+        meta: {title: '博客管理'},
+        children: [
+            {
+                meta: {title: '博客列表'},
+                path: '/blog/list',
+                component: Banner,
+            },
+            {
+                meta: {title: '博客分类'},
+                path: '/blog/category',
+                component: News,
+            },
+        ]
+    },
+    {
         meta: {title: '后台管理-登录'},
         path: '/login',
         component: Login
