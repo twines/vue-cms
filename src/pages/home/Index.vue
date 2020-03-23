@@ -60,6 +60,7 @@
                 <!--                        <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
                 <!--                    </el-breadcrumb>-->
                 <!--                </el-row>-->
+                <breadcrumb class="breadcrumb-container"/>
                 <router-view :key="key"></router-view>
             </el-main>
         </el-container>
@@ -67,8 +68,13 @@
 </template>
 
 <script>
+    import Breadcrumb from '@/components/Breadcrumb/Index'
+
     export default {
         name: "HomeIndex",
+        components: {
+            Breadcrumb
+        },
         data() {
             return {
                 isCollapse: false,
@@ -132,7 +138,6 @@
                         }
                     });
                     this.permissionList = parentPermission;
-                    console.log(this.permissionList);
                 })
             },
             handleCommand(command) {
@@ -150,7 +155,7 @@
             },
             openMenu() {
                 this.isCollapse = !this.isCollapse
-            }
+            },
         }
     }
 </script>

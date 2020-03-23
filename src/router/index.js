@@ -15,10 +15,11 @@ const routes = [
         path: '/',
         component: Home,
         redirect: '/dashboard',
+        meta: {title: '仪表盘',breadcrumb:false},
         children: [
             {
-                path: 'dashboard',
-                meta:{title:'仪表盘-首页'},
+                path: '/dashboard',
+                meta: {title: '首页'},
                 component: Dashboard
             },
         ]
@@ -26,14 +27,16 @@ const routes = [
     {
         path: '/',
         component: Home,
+        redirect: 'noRedirect',
+        meta: {title: '权限管理'},
         children: [
             {
-                meta:{title:'权限管理-角色列表'},
+                meta: {title: '角色列表'},
                 path: '/role/list',
                 component: Role
             },
             {
-                meta:{title:'权限管理-管理员列表'},
+                meta: {title: '管理员列表'},
                 path: '/admin/list',
                 component: Admin
             },
@@ -42,10 +45,11 @@ const routes = [
     {
         path: '/user',
         component: Home,
-        redirect: '/user/list',
+        redirect: 'noRedirect',
+        meta: {title: '用户管理'},
         children: [
             {
-                meta:{title:'用户管理-用户列表'},
+                meta: {title: '用户列表'},
                 path: 'list',
                 component: User,
             },
@@ -54,22 +58,23 @@ const routes = [
     {
         path: '/setting',
         component: Home,
-        redirect: '/setting/banner',
+        redirect: 'noRedirect',
+        meta: {title: '网站管理'},
         children: [
             {
-                meta:{title:'网站管理-Banner列表'},
+                meta: {title: 'Banner列表'},
                 path: '/setting/banner',
                 component: Banner,
             },
             {
-                meta:{title:'网站管理-新闻公告列表'},
+                meta: {title: '新闻公告列表'},
                 path: '/setting/news',
                 component: News,
             },
         ]
     },
     {
-        meta:{title:'后台管理-登录'},
+        meta: {title: '后台管理-登录'},
         path: '/login',
         component: Login
     }
