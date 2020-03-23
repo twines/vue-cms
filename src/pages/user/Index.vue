@@ -1,7 +1,7 @@
 <template>
     <el-card shadow="hover">
         <el-row :gutter="24">
-            <el-col :span="12">
+            <el-col :span="6">
                 <el-input placeholder="请输入内容" v-model="keyword" clearable>
                     <el-select v-model="select" slot="prepend" placeholder="选择条件" class="prefix-text">
                         <el-option label="正常" value="1"></el-option>

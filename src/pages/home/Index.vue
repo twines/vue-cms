@@ -16,8 +16,12 @@
         </el-header>
         <el-container>
             <el-aside :style="{width:!isCollapse?'300px':'72px'}">
-                <el-button type="text" v-if="isCollapse" @click="openMenu()">展开</el-button>
-                <el-button type="text" v-else @click="openMenu()">关闭</el-button>
+                <el-button type="text" style="color: white" icon="el-icon-s-unfold" v-if="isCollapse"
+                           @click="openMenu()">展开
+                </el-button>
+                <el-button type="text" style="color: white;padding-left:20px;" icon="el-icon-s-fold" v-else
+                           @click="openMenu()">关闭
+                </el-button>
                 <el-menu
                         style="border:none"
                         background-color="#545c64"
@@ -169,6 +173,7 @@
         margin-right: 16px;
         color: #fff;
     }
+
     .el-header {
         background-color: #545c64;
         height: 68px !important;
