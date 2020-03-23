@@ -18,6 +18,7 @@ const routes = [
         children: [
             {
                 path: 'dashboard',
+                meta:{title:'仪表盘-首页'},
                 component: Dashboard
             },
         ]
@@ -27,10 +28,12 @@ const routes = [
         component: Home,
         children: [
             {
+                meta:{title:'权限管理-角色列表'},
                 path: '/role/list',
                 component: Role
             },
             {
+                meta:{title:'权限管理-管理员列表'},
                 path: '/admin/list',
                 component: Admin
             },
@@ -42,6 +45,7 @@ const routes = [
         redirect: '/user/list',
         children: [
             {
+                meta:{title:'用户管理-用户列表'},
                 path: 'list',
                 component: User,
             },
@@ -53,16 +57,19 @@ const routes = [
         redirect: '/setting/banner',
         children: [
             {
+                meta:{title:'网站管理-Banner列表'},
                 path: '/setting/banner',
                 component: Banner,
             },
             {
+                meta:{title:'网站管理-新闻公告列表'},
                 path: '/setting/news',
                 component: News,
             },
         ]
     },
     {
+        meta:{title:'后台管理-登录'},
         path: '/login',
         component: Login
     }
@@ -80,6 +87,9 @@ router.beforeEach((to, from, next) => {
         if (!token) {
             return router.push('/login')
         }
+    }
+    if (to.meta.title) {
+        document.title = to.meta.title
     }
     next();
 });
