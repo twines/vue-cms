@@ -10,6 +10,8 @@ import Admin from '../pages/admin/Index'
 import Banner from '../pages/setting/Banner'
 import News from '../pages/setting/News'
 import Site from '../pages/setting/Site'
+import Msg from '../pages/message/Msg'
+import WorkOrder from '../pages/message/WorkOrder'
 
 vue.use(VueRouter);
 const routes = [
@@ -100,6 +102,24 @@ const routes = [
                 meta: {title: '博客分类'},
                 path: '/blog/category',
                 component: News,
+            },
+        ]
+    },
+    {
+        path: '/msg',
+        component: Home,
+        redirect: 'noRedirect',
+        meta: {title: '用户反馈管理'},
+        children: [
+            {
+                meta: {title: '用户留言'},
+                path: '/msg/list',
+                component: Msg,
+            },
+            {
+                meta: {title: '工单'},
+                path: '/work/order',
+                component: WorkOrder,
             },
         ]
     },
