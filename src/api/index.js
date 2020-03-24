@@ -172,6 +172,12 @@ const api = {
     },
     updateNews: function (newsId, data) {
         return post('/admin/v1/news/update/' + newsId, data)
+    },
+    siteConfig: function (data) {
+        return post('/admin/v1/site/config', data)
+    },
+    getSiteDetail:function () {
+        return get('/admin/v1/site/detail')
     }
 };
 export default api

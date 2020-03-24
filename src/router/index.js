@@ -9,6 +9,7 @@ import UserGroup from '../pages/user/Group'
 import Admin from '../pages/admin/Index'
 import Banner from '../pages/setting/Banner'
 import News from '../pages/setting/News'
+import Site from '../pages/setting/Site'
 
 vue.use(VueRouter);
 const routes = [
@@ -76,6 +77,11 @@ const routes = [
                 meta: {title: '新闻公告列表'},
                 path: '/setting/news',
                 component: News,
+            },
+            {
+                meta: {title: '网站设置'},
+                path: '/setting/site',
+                component: Site,
             },
         ]
     },
