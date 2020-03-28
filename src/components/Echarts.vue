@@ -12,6 +12,11 @@
         mounted() {
             this.drawLine();
         },
+        watch: {
+            option() {
+                this.drawLine();
+            }
+        },
         methods: {
             drawLine() {
                 // 基于准备好的dom，初始化echarts实例

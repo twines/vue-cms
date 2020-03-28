@@ -4,7 +4,7 @@ import router from '@/router'
 import {Message} from "element-ui";
 
 const instance = axios.create({
-    baseURL: 'http://127.0.0.1',
+    baseURL: ' http://127.0.0.1:8686',
     timeout: 5000
 });
 instance.interceptors.request.use(
@@ -118,6 +118,9 @@ const api = {
     getRoleList: function (page) {
         return get('/admin/v1/role/list?page=' + page)
     },
+    getDashboardData: function () {
+        return get('/admin/v1/dashboard')
+    },
     deleteRole: function (roleId) {
         return instance.delete('/admin/v1/role/delete/' + roleId)
             .then(function (response) {
@@ -176,7 +179,7 @@ const api = {
     siteConfig: function (data) {
         return post('/admin/v1/site/config', data)
     },
-    getSiteDetail:function () {
+    getSiteDetail: function () {
         return get('/admin/v1/site/detail')
     }
 };

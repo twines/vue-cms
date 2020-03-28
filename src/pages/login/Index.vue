@@ -30,7 +30,7 @@
         data() {
             return {
                 ruleForm: {
-                    userName: 'hanyun',
+                    userName: 'admin',
                     password: '1355081829aA',
                 },
                 loading: false,

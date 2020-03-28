@@ -4,60 +4,55 @@
             <el-col :span="6">
                 <el-card shadow="always">
                     <div slot="header">
-                        <span> <i class="el-icon-user"></i>总人数</span>
+                        <span> <i class="el-icon-user"></i>总顾客人数</span>
                         <el-button style="float: right; padding: 3px 0" type="text">详情</el-button>
                     </div>
-                    <h1>10K</h1>
+                    <h1>{{customerNumber}}人</h1>
                 </el-card>
             </el-col>
             <el-col :span="6">
                 <el-card shadow="always">
                     <div slot="header">
-                        <span> <i class="el-icon-price-tag"></i>总收藏</span>
+                        <span> <i class="el-icon-shopping-cart-full"></i>总订单数</span>
                         <el-button style="float: right; padding: 3px 0" type="text">详情</el-button>
                     </div>
-                    <h1>10K</h1>
+                    <h1>{{orderNumber}}单</h1>
                 </el-card>
             </el-col>
             <el-col :span="6">
                 <el-card shadow="always">
                     <div slot="header">
-                        <span> <i class="el-icon-view"></i>总访问量</span>
+                        <span> <i class="el-icon-view"></i>总销售额</span>
                         <el-button style="float: right; padding: 3px 0" type="text">详情</el-button>
                     </div>
-                    <h1>10W</h1>
+                    <h1>{{totalSale}}</h1>
                 </el-card>
             </el-col>
             <el-col :span="6">
                 <el-card shadow="always">
                     <div slot="header">
-                        <span> <i class="el-icon-chat-line-square"></i>待办事项</span>
+                        <span> <i class="el-icon-chat-line-square"></i>在线人数</span>
                         <el-button style="float: right; padding: 3px 0" type="text">详情</el-button>
                     </div>
-                    <h1>10</h1>
+                    <h1>{{onlineNumber}}人</h1>
                 </el-card>
             </el-col>
         </el-row>
         <el-row :gutter="12" style="margin-top: 16px">
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-card shadow="hover">
                     <echarts chart-id="china" :option="chinaOptions"></echarts>
                 </el-card>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-card shadow="hover">
-                    <echarts chart-id="user" :option="userOptions"></echarts>
-                </el-card>
-            </el-col>
-            <el-col :span="8">
-                <el-card shadow="hover">
-                    <echarts chart-id="name" :option="nameOptions"></echarts>
+                    <echarts chart-id="user" :option="saleAnalyticsOptions"></echarts>
                 </el-card>
             </el-col>
         </el-row>
 
         <el-row :gutter="12" style="margin-top: 16px">
-            <el-col :span="12">
+            <el-col :span="6">
                 <el-card shadow="hover">
                     <div slot="header">
                         <span>用户留言</span>
@@ -83,27 +78,43 @@
                     </el-card>
                 </el-card>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="18">
                 <el-card shadow="hover">
                     <div slot="header">
-                        <span>待办工单</span>
+                        <span><i class="el-icon-s-goods"></i>最新订单</span>
                     </div>
                     <el-card shadow="hover">
                         <el-table
-                                :data="tableData"
+                                :data="orderList"
                                 stripe
                                 style="width: 100%">
                             <el-table-column
-                                    prop="date"
-                                    label="日期">
+                                    prop="orderId"
+                                    label="订单id">
                             </el-table-column>
                             <el-table-column
-                                    prop="name"
-                                    label="姓名">
+                                    prop="firstname"
+                                    label="顾客姓名">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="statusName"
+                                    label="状态">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="dateAdded"
+                                    label="添加时间">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="total"
+                                    label="（￥）金额">
                             </el-table-column>
                             <el-table-column
                                     prop="title"
-                                    label="描述">
+                                    label="操作">
+
+                                <template>
+                                    <el-button type="primary" icon="el-icon-view"></el-button>
+                                </template>
                             </el-table-column>
                         </el-table>
                     </el-card>
@@ -121,6 +132,11 @@
         components: {Echarts},
         data() {
             return {
+                customerNumber: 0,
+                orderNumber: 0,
+                totalSale: 0,
+                onlineNumber: 0,
+                orderList: [],
                 chinaOptions: {
                     title: {
                         text: '中国iphone销量分布图',
@@ -264,32 +280,7 @@
                         }
                     ]
                 },
-                userOptions: {
-                    title: {text: '新增用户统计'},
-                    tooltip: {},
-                    xAxis: {
-                        data: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '人数',
-                        type: 'bar',
-                        data: [5, 20, 36, 10, 10, 20, 5, 20, 36, 10, 10, 20]
-                    }]
-                },
-                nameOptions: {
-                    title: {text: '访问量统计'},
-                    tooltip: {},
-                    xAxis: {
-                        data: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '人次',
-                        type: 'bar',
-                        data: [500, 2000, 3600, 1000, 1000, 2000, 5000, 2000, 3600, 1000, 1990, 2000]
-                    }]
-                },
+                saleAnalyticsOptions: {},
                 tableData: [{
                     date: '2016-05-02',
                     name: '王小虎',
@@ -307,6 +298,91 @@
                     name: '王小虎',
                     title: '上海市普陀区金沙江路 1516 弄'
                 }]
+            }
+        },
+        mounted() {
+            this.getDashboardData()
+        },
+        methods: {
+            getDashboardData() {
+                return this.$api.getDashboardData().then(v => {
+                    this.customerNumber = v.data.customerNumber;
+                    this.orderNumber = v.data.orderNumber;
+                    this.totalSale = v.data.totalSale;
+                    this.onlineNumber = v.data.onlineNumber;
+                    this.orderList = v.data.orderList;
+                    let totalMoneyList = [];
+                    let totalOrderList = [];
+                    let dayList = [];
+                    for (let i = 1; i < 31; i++) {
+                        dayList.push(i)
+                    }
+                    v.data.saleAnalytics.forEach(v => {
+                        totalMoneyList.push(v.total)
+                        totalOrderList.push(v.number)
+                    });
+                    this.saleAnalyticsOptions = {
+                        title: {text: '销售统计'},
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                crossStyle: {
+                                    color: '#999'
+                                }
+                            }
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        legend: {
+                            data: ['销售金额', '订单数']
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: dayList,
+                                axisPointer: {
+                                    type: 'shadow'
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                name: '销售金额',
+                                min: 0,
+                                max: 2000,
+                                interval: 500,
+                                axisLabel: {
+                                    formatter: '{value} ￥'
+                                }
+                            },
+                            {
+                                type: 'value',
+                                name: '订单数',
+                                min: 0,
+                                max: 10,
+                                interval: 1,
+                                axisLabel: {
+                                    formatter: '{value} 单'
+                                }
+                            }
+                        ],
+                        series: [{
+                            name: '销售金额',
+                            type: 'bar',
+                            data: totalMoneyList
+                        }, {
+                            name: '订单数',
+                            type: 'line',
+                            yAxisIndex: 1,
+                            data: totalOrderList
+                        }]
+                    };
+                })
             }
         }
     }
