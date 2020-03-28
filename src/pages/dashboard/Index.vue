@@ -111,9 +111,9 @@
                             <el-table-column
                                     prop="title"
                                     label="操作">
-
-                                <template>
-                                    <el-button type="primary" icon="el-icon-view"></el-button>
+                                <template slot-scope="scope">
+                                    <el-button @click="showOrderDetail(scope.row.orderId)" type="primary"
+                                               icon="el-icon-view"></el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -383,6 +383,9 @@
                         }]
                     };
                 })
+            },
+            showOrderDetail(orderId) {
+                this.$router.push({path: '/order/detail/' + orderId})
             }
         }
     }

@@ -12,6 +12,7 @@ import News from '../pages/setting/News'
 import Site from '../pages/setting/Site'
 import Msg from '../pages/message/Msg'
 import WorkOrder from '../pages/message/WorkOrder'
+import OrderDetail from '../pages/order/Detail'
 
 vue.use(VueRouter);
 const routes = [
@@ -25,6 +26,19 @@ const routes = [
                 path: '/dashboard',
                 meta: {title: '首页'},
                 component: Dashboard
+            },
+        ]
+    },
+    {
+        path: '/order',
+        component: Home,
+        redirect: 'noRedirect',
+        meta: {title: '订单管理', breadcrumb: false},
+        children: [
+            {
+                path: '/order/detail/:orderId',
+                meta: {title: '订单详情'},
+                component: OrderDetail
             },
         ]
     },

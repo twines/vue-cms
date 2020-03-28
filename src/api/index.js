@@ -181,6 +181,9 @@ const api = {
     },
     getSiteDetail: function () {
         return get('/admin/v1/site/detail')
+    },
+    getOrderDetail: function (orderId) {
+        return get('/admin/v1/order/detail/' + orderId)
     }
 };
 export default api
