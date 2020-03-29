@@ -4,7 +4,8 @@ import router from '@/router'
 import {Message} from "element-ui";
 
 const instance = axios.create({
-    baseURL: ' http://127.0.0.1:9999',
+    baseURL: 'http://127.0.0.1:9999',
+    // baseURL: 'http://live.xiangshike.com',
     timeout: 5000
 });
 instance.interceptors.request.use(
@@ -188,6 +189,9 @@ const api = {
     },
     getUserList(page, keyword, status) {
         return get('/admin/v1/user/list?page=' + page + '&keyword=' + keyword + '&status=' + status)
+    },
+    getUserAuthList: function (page, keyword, status) {
+        return get('/admin/v1/user/auth/list?page=' + page + '&keyword=' + keyword + '&status=' + status)
     },
     getNewsById: function (newsId) {
         return get('/admin/v1/news/detail/' + newsId)

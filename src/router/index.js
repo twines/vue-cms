@@ -5,6 +5,7 @@ import Home from '../pages/home/Index'
 import Dashboard from '../pages/dashboard/Index'
 import Role from '../pages/role/Index'
 import UserList from '../pages/user/List'
+import UserAuth from '../pages/user/Auth'
 import UserGroup from '../pages/user/Group'
 import Admin from '../pages/admin/Index'
 import Banner from '../pages/setting/Banner'
@@ -75,6 +76,11 @@ const routes = [
                 meta: {title: '用户组'},
                 path: '/user/group',
                 component: UserGroup,
+            },
+            {
+                meta: {title: '用认证'},
+                path: '/user/auth',
+                component: UserAuth,
             },
         ]
     },
