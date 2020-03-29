@@ -55,9 +55,13 @@
                             this.loading = !this.loading;
                         }, 3000);
                         this.$api.login(this.ruleForm).then(v => {
-                            window.sessionStorage.setItem('token', v.data.token)
-                            this.$router.push('/')
-                            // this.$message.success('欢迎您，' + v.data.user.name + '！');
+                            if (v.code === 20000) {
+                                window.sessionStorage.setItem('token', v.data.accessToken);
+                                this.$message.success('欢迎您，' + v.data.user.name + '！');
+                                this.$router.push('/')
+                            } else {
+                                this.$message.error(v.msg);
+                            }
                         })
                     } else {
                         this.$message.error('');

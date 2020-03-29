@@ -3,10 +3,13 @@
         <el-row :gutter="24">
             <el-col :span="6">
                 <el-input placeholder="请输入内容" v-model="keyword" clearable>
-                    <el-select v-model="select" slot="prepend" placeholder="选择条件" class="prefix-text">
+                    <el-select v-model="userStatus" slot="prepend" placeholder="选择条件" class="prefix-text">
+                        <!--                        0禁用;1正常；2认证中；3认证失败；4认证成功-->
+                        <el-option label="禁用" value="0"></el-option>
                         <el-option label="正常" value="1"></el-option>
-                        <el-option label="黑名单" value="2"></el-option>
-                        <el-option label="已经实名" value="3"></el-option>
+                        <el-option label="认证中" value="2"></el-option>
+                        <el-option label="认证失败" value="3"></el-option>
+                        <el-option label="认证成功" value="4"></el-option>
                     </el-select>
                     <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
                 </el-input>
@@ -18,8 +21,8 @@
         </el-row>
         <el-dialog title="添加用户" :visible.sync="userAddDialogVisible">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-                <el-form-item label="用户名称" prop="userName">
-                    <el-input v-model="ruleForm.userName"></el-input>
+                <el-form-item label="用户名称" prop="username">
+                    <el-input v-model="ruleForm.username"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
                     <el-input type="password" v-model="ruleForm.password"></el-input>
@@ -32,8 +35,8 @@
         </el-dialog>
         <el-dialog title="编辑用户信息" :visible.sync="userInfo">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-                <el-form-item label="用户名称" prop="userName">
-                    <el-input v-model="ruleForm.userName"></el-input>
+                <el-form-item label="用户名称" prop="username">
+                    <el-input v-model="ruleForm.username"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
                     <el-input type="password" v-model="ruleForm.password"></el-input>
@@ -52,7 +55,7 @@
             </el-table-column>
 
             <el-table-column prop="id" label="ID"></el-table-column>
-            <el-table-column prop="name" label="用户名称"></el-table-column>
+            <el-table-column prop="username" label="用户名称"></el-table-column>
             <el-table-column prop="trueName" label="真实姓名"></el-table-column>
             <el-table-column prop="qq" label="QQ"></el-table-column>
             <el-table-column prop="mobile" label="手机号"></el-table-column>
@@ -65,11 +68,22 @@
             </el-table-column>
             <el-table-column prop="status" label="状态">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.status===1">
+                    <!--                        0禁用;1正常；2认证中；3认证失败；4认证成功-->
+
+                    <span v-if="scope.row.status===0">
+                        <el-tag type="danger">禁用</el-tag>
+                    </span>
+                    <span v-else-if="scope.row.status===1">
                         <el-tag>正常</el-tag>
                     </span>
+                    <span v-else-if="scope.row.status===2">
+                        <el-tag type="info">认证中</el-tag>
+                    </span>
+                    <span v-else-if="scope.row.status===3">
+                        <el-tag type="warning">认证失败</el-tag>
+                    </span>
                     <span v-else>
-                        <el-tag type="danger">禁用</el-tag>
+                        <el-tag type="success">认证成功</el-tag>
                     </span>
                 </template>
             </el-table-column>
@@ -102,14 +116,15 @@
                 totalPage: 1,
                 loading: false,
                 keyword: '',
-                select: '',
+                userStatus: '',
                 currentPage: 1,
                 ruleForm: {
-                    userName: '',
+                    username: '',
+                    id: '',
                     password: ''
                 },
                 rules: {
-                    userName: [
+                    username: [
                         {required: true, message: '请输入用户名称', trigger: 'blur'},
                         {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}
                     ],
@@ -156,7 +171,7 @@
             },
             showDialog() {
                 this.ruleForm = {
-                    userName: '',
+                    username: '',
                     password: ''
                 };
                 this.userAddDialogVisible = !this.userAddDialogVisible;
@@ -176,9 +191,9 @@
                 console.log(`当前页: ${val}`);
             },
             getUserList() {
-                this.$api.getUserList(this.currentPage, this.keyword).then(v => {
+                this.$api.getUserList(this.currentPage, this.keyword, this.userStatus).then(v => {
                     this.tableData = v.data.data;
-                    this.totalPage = v.data.totalPage;
+                    this.totalPage = v.data.lastPage;
                 });
             },
             getUserById(userId) {
@@ -187,7 +202,18 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        this.loading = true;
+                        setTimeout(() => this.loading = false, 5000);
+                        this.$api.updateUserInfo(this.ruleForm.id, this.ruleForm).then(v => {
+                            this.loading = false;
+                            if (v.code === 20000) {
+                                this.showDialog();
+                                setTimeout(() => window.location.reload(), 5000);
+                                this.$message.success('更新成功');
+                            } else {
+                                this.$message.error(v.msg);
+                            }
+                        })
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -200,13 +226,13 @@
                         this.loading = true;
                         setTimeout(() => this.loading = false, 5000);
                         this.$api.addUser(this.ruleForm).then(v => {
-                            this.showDialog();
                             this.loading = false;
                             if (v.code === 20000) {
+                                this.showDialog();
                                 setTimeout(() => window.location.reload(), 500);
                                 this.$message.success('添加成功');
                             } else {
-                                this.$message.error(v.message);
+                                this.$message.error(v.msg);
                             }
                         })
                     } else {

@@ -4,14 +4,14 @@ import router from '@/router'
 import {Message} from "element-ui";
 
 const instance = axios.create({
-    baseURL: ' http://127.0.0.1:8686',
+    baseURL: ' http://127.0.0.1:9999',
     timeout: 5000
 });
 instance.interceptors.request.use(
     config => {
         let token = window.sessionStorage.getItem('token');
         if (token) { // 判断是否存在token，如果存在的话，则每个http header都加上token
-            config.headers.Authorization = token  //请求头加上token
+            config.headers.Authorization = 'bearer ' + token  //请求头加上token
         }
         return config
     },
@@ -58,6 +58,23 @@ function post(path, data) {
         });
 }
 
+function put(path, data) {
+    let formData = null;
+    if (data) {
+        formData = qs.stringify(data)
+    }
+    return instance.put(path, formData)
+        .then(function (response) {
+            return response.data
+        })
+        .catch(function (error) {
+            errorAction(error, path);
+        })
+        .finally(function () {
+            // always executed
+        });
+}
+
 function del(path, data) {
     let formData = null;
     if (data) {
@@ -78,10 +95,18 @@ function del(path, data) {
 function errorAction(error, path) {
     switch (error) {
         case 401:
+            Message.error(`接口地址${path}不可用,错误代码${error}`);
+            router.push('/login');
+            break;
+        case 403:
+            Message.error(`接口地址${path}不可用,错误代码${error}`);
             router.push('/login');
             break;
         case 404:
-            Message.error(`接口地址${path}不可用`);
+            Message.error(`接口地址${path}不可用,错误代码${error}`);
+            break;
+        case 500:
+            Message.error(`接口地址${path}不可用,错误代码${error}`);
             break;
         default:
     }
@@ -155,11 +180,14 @@ const api = {
     deleteUser: function (userId) {
         return del('/admin/v1/user/' + userId)
     },
+    updateUserInfo: function (userId, data) {
+        return put('/admin/v1/user/' + userId, data);
+    },
     getUserById: function (userId) {
         return get('/admin/v1/user/' + userId)
     },
-    getUserList(page, keyword) {
-        return get('/admin/v1/user/list?page=' + page + '&keyword=' + keyword)
+    getUserList(page, keyword, status) {
+        return get('/admin/v1/user/list?page=' + page + '&keyword=' + keyword + '&status=' + status)
     },
     getNewsById: function (newsId) {
         return get('/admin/v1/news/detail/' + newsId)
