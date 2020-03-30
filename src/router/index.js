@@ -14,6 +14,7 @@ import Site from '../pages/setting/Site'
 import Msg from '../pages/message/Msg'
 import WorkOrder from '../pages/message/WorkOrder'
 import OrderDetail from '../pages/order/Detail'
+import RoomList from '../pages/room/List'
 
 vue.use(VueRouter);
 const routes = [
@@ -141,6 +142,19 @@ const routes = [
                 path: '/work/order',
                 component: WorkOrder,
             },
+        ]
+    },
+    {
+        path: '/room',
+        component: Home,
+        redirect: 'noRedirect',
+        meta: {title: '直播间管理'},
+        children: [
+            {
+                meta: {title: '房间列表'},
+                path: '/room/list',
+                component: RoomList,
+            }
         ]
     },
     {

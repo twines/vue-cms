@@ -216,6 +216,9 @@ const api = {
     },
     getOrderDetail: function (orderId) {
         return get('/admin/v1/order/detail/' + orderId)
+    },
+    getRoomList: function (page) {
+        return get('/admin/v1/room/list?page=' + page)
     }
 };
 export default api
